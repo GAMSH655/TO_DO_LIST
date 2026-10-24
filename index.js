@@ -85,7 +85,6 @@ addTaskBtn.addEventListener("click", function(e){
         taskBadge.textContent = arrayOfTasks.length;
         taskResultContainer.remove();
       }
-    console.log(index_taskID);
 });
 
      taskResultContainer.append(taskResultParagraph,deleteTaskButton, taskCheckbox)
