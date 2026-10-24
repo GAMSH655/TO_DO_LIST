@@ -1,21 +1,32 @@
-const taskInput = document.querySelector("#taskInput")
-const addTaskBtn = document.querySelector("#addTaskBtn")
-const taskWarning = document.querySelector("#taskWarning")
-const taskBadge = document.querySelector("#taskBadge")
-const emptyState = document.querySelector("#emptyState");
-const taskContainer  = document.querySelector("#taskContainer");
+
+const taskInput = document.querySelector("#taskInput");
+const addTaskBtn = document.querySelector("#addTaskBtn");
+const taskWarning = document.querySelector("#taskWarning");
+const taskBadge = document.querySelector("#taskBadge");
+const taskContainer = document.querySelector("#taskContainer");
 const filterButtons = document.querySelectorAll(".filter-btn");
 
-const arrayOfTasks = []
-const completedTaskArray = []
-const pendingTaskArray = []
+const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+const arrayOfTasks = [...savedTasks];
 
+let currentFilter = "all";
 
+function clearInputs() {
+    taskInput.value = "";
+}
 
+function clearwarning() {
+    taskWarning.textContent = "";
+}
 
+function updateTaskBadge() {
+    taskBadge.textContent = arrayOfTasks.length;
+}
 
-function renderTasks(filterValue = "all") {
+function   renderTasks(filterValue = currentFilter) {
+    currentFilter = filterValue;
     taskContainer.innerHTML = "";
+    updateTaskBadge();
 
     const filteredTasks = arrayOfTasks.filter(function(task) {
         return filterValue === "all" || task.status === filterValue;
@@ -48,18 +59,26 @@ function renderTasks(filterValue = "all") {
         taskCheckbox.classList.add("task-checkbox");
         taskCheckbox.checked = objectTasks.status === "completed";
 
+        if (objectTasks.status === "completed") {
+            taskResultParagraph.classList.add("task-completed");
+        }
+
         taskCheckbox.addEventListener("change", function() {
             objectTasks.status = taskCheckbox.checked
                 ? "completed"
                 : "pending";
 
-            renderTasks(filterValue);
-            updateTaskBadge();
+            localStorage.setItem(
+                "tasks",
+                JSON.stringify(arrayOfTasks)
+            );
+
+            renderTasks();
         });
 
         const deleteTaskButton = document.createElement("button");
         deleteTaskButton.classList.add("deleteTaskButton");
-        deleteTaskButton.textContent = "Delete Task 🗑️";
+        deleteTaskButton.textContent = "🗑️";
 
         deleteTaskButton.addEventListener("click", function() {
             const index_taskID = arrayOfTasks.findIndex(function(task) {
@@ -68,14 +87,15 @@ function renderTasks(filterValue = "all") {
 
             if (index_taskID !== -1) {
                 arrayOfTasks.splice(index_taskID, 1);
-                updateTaskBadge();
-                renderTasks(filterValue);
+
+                localStorage.setItem(
+                    "tasks",
+                    JSON.stringify(arrayOfTasks)
+                );
+
+                renderTasks();
             }
         });
-
-        if (objectTasks.status === "completed") {
-            taskResultParagraph.classList.add("task-completed");
-        }
 
         taskResultContainer.append(
             taskCheckbox,
@@ -87,103 +107,36 @@ function renderTasks(filterValue = "all") {
     });
 }
 
-function updateTaskBadge() {
-    taskBadge.textContent = arrayOfTasks.length;
-}
+addTaskBtn.addEventListener("click", function(e) {
+    e.preventDefault();
 
+    const entered_Task = String(taskInput.value.trim());
 
-function clearInputs(){
-    taskInput.value = ""
-}
-function clearwarning(){
-   taskWarning.textContent = ""
-}
-addTaskBtn.addEventListener("click", function(e){
-    e.preventDefault()
-     const entered_Task =  String(taskInput.value.trim())
- 
-       clearwarning()
-     
-     let isEnteredTask = true
-     if(entered_Task === ""){
-      taskWarning.textContent = "input a task"
-        isEnteredTask = false
-     }
-     
-     if(!isEnteredTask) return
+    clearwarning();
 
-     const objectTasks = {
-       taskId : Date.now(),
-       taskName :entered_Task,
-       date: new Date().toLocaleDateString(),
-       time: new Date().toLocaleTimeString(),
-       status: "pending"
-     }
-     arrayOfTasks.push(objectTasks)
-     taskBadge.textContent = arrayOfTasks.length  
-     console.log(arrayOfTasks)
-      clearInputs()
-    
-     const taskResultContainer = document.createElement("div");
-     taskResultContainer.classList.add("taskResultContainer");
+    if (entered_Task === "") {
+        taskWarning.textContent = "Input a task";
+        return;
+    }
 
-     const taskResultParagraph = document.createElement("p");
-     taskResultParagraph.classList.add("taskResultParagraph");
+    const objectTasks = {
+        taskId: Date.now(),
+        taskName: entered_Task,
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        status: "pending"
+    };
 
-     const deleteTaskButton = document.createElement("button")
-     deleteTaskButton.classList.add("deleteTaskButton")
-      deleteTaskButton.textContent = " Delete Task 🚮"
- 
-     const taskCheckbox = document.createElement("input");
-        taskCheckbox.type = "checkbox";
-        taskCheckbox.classList.add("task-checkbox");
+    arrayOfTasks.push(objectTasks);
 
-        function updateTaskDisplay() {
-         taskResultParagraph.textContent =
-        `Task: ${objectTasks.taskName}\n` +
-        `Date: ${objectTasks.date}\n` +
-        `Time: ${objectTasks.time}\n` +
-        `Status: ${objectTasks.status}`;
-}             
+    localStorage.setItem(
+        "tasks",
+        JSON.stringify(arrayOfTasks)
+    );
 
-     taskCheckbox.addEventListener("change", function() {
-       objectTasks.status = taskCheckbox.checked
-        ? "completed"
-        : "pending";
-         updateTaskDisplay()
-         taskResultParagraph.classList.toggle(
-         "task-completed",
-         taskCheckbox.checked
-);
-     })
-    deleteTaskButton.addEventListener("click", function() {
-    const index_taskID = arrayOfTasks.findIndex(function(task) {
-        return task.taskId === objectTasks.taskId;
-    });
-
-     if (index_taskID !== -1) {
-        arrayOfTasks.splice(index_taskID, 1);
-        taskBadge.textContent = arrayOfTasks.length;
-        taskResultContainer.remove();
-      }
+    clearInputs();
+    renderTasks();
 });
-
-     taskResultContainer.append(taskResultParagraph,deleteTaskButton, taskCheckbox)
-     taskContainer.append(taskResultContainer)
-
-
-      taskResultParagraph.textContent =
-      `Task: ${objectTasks.taskName}\n` +
-      `Date: ${objectTasks.date}\n` +
-      `Time: ${objectTasks.time}\n` +
-      `Status: ${objectTasks.status}`
-
-     if(emptyState){
-        emptyState.remove()
-     }
-})
-
-
 
 filterButtons.forEach(function(button) {
     button.addEventListener("click", function() {
@@ -198,3 +151,5 @@ filterButtons.forEach(function(button) {
         button.classList.add("active");
     });
 });
+
+renderTasks();
