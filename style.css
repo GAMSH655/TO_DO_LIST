@@ -442,6 +442,18 @@ margin-top: 10px;
 }
 
 }
+
+/* 
+
+
+.project-thumbnail {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 16px;
+} */
 @media (max-width: 560px) {
   body {
     padding: 25px 14px;
