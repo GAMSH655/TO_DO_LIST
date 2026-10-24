@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow | To-Do List</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js" defer></script>
+</head>
+<body>
+  <main class="app-container">
+    <header class="app-header">
+      <div class="logo">T</div>
+      <div class="header-text">
+        <h1>My Tasks</h1>
+        <p>Stay organized, get things done.</p>
+      </div>
+    </header>
+
+    <section class="progress-card">
+      <div class="progress-info">
+        <div>
+          <p class="progress-label">YOUR PROGRESS</p>
+          <h2>Keep it up!</h2>
+          <p class="progress-description">Small steps lead to big results.</p>
+        </div>
+        <div class="progress-count">
+          <span id="completedCount">0</span>
+          <span class="count-divider">/</span>
+          <span id="totalCount">0</span>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="progress-footer">Tasks completed</p>
+    </section>
+
+    <section class="task-section">
+      <div class="section-heading">
+        <div>
+          <h2>My Task List</h2>
+          <p>Manage your daily activities.</p>
+        </div>
+        <span class="task-badge" id="taskBadge">0 Tasks</span>
+      </div>
+
+    <div class="">
+          <form id="taskForm" class="task-form">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="What do you need to do?"
+          aria-label="New task"
+          required
+        >
+        <button type="submit" id="addTaskBtn">
+          <span>+</span> Add Task
+        </button>
+      </form>
+      <span id="taskWarning"></span>
+    </div>
+       
+
+      <div class="filter-row">
+        <div class="filter-buttons">
+          <button type="button" class="filter-btn active" data-filter="all">
+            All Tasks
+          </button>
+          <button type="button" class="filter-btn" data-filter="pending">
+            Pending
+          </button>
+          <button type="button" class="filter-btn" data-filter="completed">
+            Completed
+          </button>
+        </div>
+      </div>
+
+      <div id="taskContainer" class="task-container">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">✓</div>
+          <h3>No tasks yet</h3>
+          <p>Add your first task and start making progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p>Built with focus and consistency.</p>
+      <span>TaskFlow © 2026</span>
+    </footer>
+  </main>
+</body>
+</html>
